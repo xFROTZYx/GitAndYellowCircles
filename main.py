@@ -2,27 +2,38 @@ import sys
 import random
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton
 from PyQt6.QtGui import QPainter, QColor
-from PyQt6 import uic
+from PyQt6.QtCore import Qt
 
-class MainApp(QMainWindow):
+
+class UI(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi("UI.ui", self)
-        self.button = self.findChild(QPushButton, "pushButton")
+        self.setGeometry(100, 100, 400, 300)
+        self.setWindowTitle("PyQt6 Circles")
+
+        self.button = QPushButton("Нарисовать круг", self)
+        self.button.setGeometry(150, 250, 100, 30)
+
+
+class MainApp(UI):
+    def __init__(self):
+        super().__init__()
         self.button.clicked.connect(self.draw_circle)
         self.circles = []
 
     def draw_circle(self):
-        x = random.randint(50, 250)
-        y = random.randint(50, 250)
+        x = random.randint(50, 300)
+        y = random.randint(50, 200)
         radius = random.randint(10, 100)
-        self.circles.append((x, y, radius))
+        color = QColor(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        self.circles.append((x, y, radius, color))
         self.update()
 
     def paintEvent(self, event):
         qp = QPainter(self)
-        qp.setBrush(QColor(255, 255, 0))
-        for x, y, radius in self.circles:
+        for x, y, radius, color in self.circles:
+            qp.setBrush(color)
+            qp.setPen(Qt.PenStyle.NoPen)
             qp.drawEllipse(x, y, radius, radius)
 
 if __name__ == "__main__":
